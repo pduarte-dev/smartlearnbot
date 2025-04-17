@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  chromadb:
+    build:
+      context: ./docker
+      dockerfile: chromadb.Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_db:/data
+
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    env_file: .env
+    depends_on:
+      - chromadb
+
+volumes:
+  chroma_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./chroma_db
+      o: bind
